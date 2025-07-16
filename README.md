@@ -1,6 +1,6 @@
 # A2A Document Extraction Agent
 
-An intelligent PDF extraction agent powered by Google's Gemini Flash 2.0 that implements the A2A (Agent-to-Agent) protocol, allowing other AI agents to request document extraction services.
+An intelligent PDF processing system that automatically extracts structured data from documents using **Google's Gemini Flash 2.0** via **LangChain**, **MCP (Model Context Protocol)** for PDF operations, and **Clean Architecture** for maintainable code. Implements the **A2A (Agent-to-Agent) protocol** for seamless integration with other AI agents.
 
 ## Architecture
 
