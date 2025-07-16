@@ -2,6 +2,114 @@
 
 An intelligent PDF extraction agent powered by Google's Gemini Flash 2.0 that implements the A2A (Agent-to-Agent) protocol, allowing other AI agents to request document extraction services.
 
+## Architecture
+
+### System Architecture Diagram
+
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        CLI[A2A Client CLI]
+        EXT[External Agents]
+    end
+    
+    subgraph "A2A Protocol Layer"
+        A2A[A2A Server<br/>:8080]
+        CARD[Agent Card<br/>/.well-known/agent.json]
+    end
+    
+    subgraph "Clean Architecture Layers"
+        subgraph "Infrastructure Layer"
+            WEB[Web Adapter]
+            MCP[MCP Client]
+            AI[LangChain Setup]
+        end
+        
+        subgraph "Adapters Layer"
+            CTRL[A2A Controller]
+            PRES[A2A Presenter]
+            GATE[LangChain Gateway]
+        end
+        
+        subgraph "Application Layer"
+            UC[Process Request<br/>Use Case]
+            PORTS[Agent Service Port]
+        end
+        
+        subgraph "Domain Layer"
+            ENT[Document Entity]
+            RESULT[Extraction Result]
+            RULES[Business Rules]
+        end
+    end
+    
+    subgraph "External Services"
+        MCPS[MCP PDF Server]
+        GEMINI[Google Gemini<br/>Flash 2.0]
+        PDF[PDF Files]
+    end
+    
+    CLI --> A2A
+    EXT --> A2A
+    A2A --> CARD
+    A2A --> WEB
+    WEB --> CTRL
+    CTRL --> UC
+    UC --> PORTS
+    PORTS --> GATE
+    GATE --> AI
+    AI --> GEMINI
+    GATE --> MCP
+    MCP --> MCPS
+    MCPS --> PDF
+    UC --> ENT
+    UC --> RESULT
+    CTRL --> PRES
+    PRES --> WEB
+    WEB --> A2A
+```
+
+### Request Flow Sequence
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant A2A as A2A Server
+    participant CTRL as Controller
+    participant UC as Use Case
+    participant AGENT as Agent Service
+    participant MCP as MCP Client
+    participant MCPS as MCP Server
+    participant AI as Gemini AI
+    
+    C->>A2A: POST /message
+    A2A->>CTRL: handle_message()
+    CTRL->>UC: process_request()
+    
+    alt List PDFs Request
+        UC->>AGENT: process_message("list pdfs")
+        AGENT->>MCP: invoke_tools()
+        MCP->>MCPS: list_pdfs()
+        MCPS-->>MCP: pdf_list
+        MCP-->>AGENT: tool_results
+        AGENT-->>UC: pdf_list_response
+    else Extract PDF Request
+        UC->>AGENT: process_message("extract file.pdf")
+        AGENT->>MCP: invoke_tools()
+        MCP->>MCPS: read_pdf("file.pdf")
+        MCPS-->>MCP: pdf_content
+        MCP-->>AGENT: pdf_text
+        AGENT->>AI: analyze_document(pdf_text)
+        AI-->>AGENT: structured_data
+        AGENT-->>UC: extraction_result
+    end
+    
+    UC-->>CTRL: response_dto
+    CTRL->>CTRL: create_presenter()
+    CTRL-->>A2A: a2a_response
+    A2A-->>C: JSON Response
+```
+
 ## Features
 
 - 🤝 **A2A Protocol**: Interoperable with other AI agents via standardized protocol
@@ -231,114 +339,6 @@ The project follows clean code principles with clear separation of concerns:
 - **Prompts Layer** (`app/prompts/`): AI prompt management
 
 Each layer has a single responsibility and clear interfaces.
-
-## Architecture
-
-### System Architecture Diagram
-
-```mermaid
-graph TB
-    subgraph "Client Layer"
-        CLI[A2A Client CLI]
-        EXT[External Agents]
-    end
-    
-    subgraph "A2A Protocol Layer"
-        A2A[A2A Server<br/>:8080]
-        CARD[Agent Card<br/>/.well-known/agent.json]
-    end
-    
-    subgraph "Clean Architecture Layers"
-        subgraph "Infrastructure Layer"
-            WEB[Web Adapter]
-            MCP[MCP Client]
-            AI[LangChain Setup]
-        end
-        
-        subgraph "Adapters Layer"
-            CTRL[A2A Controller]
-            PRES[A2A Presenter]
-            GATE[LangChain Gateway]
-        end
-        
-        subgraph "Application Layer"
-            UC[Process Request<br/>Use Case]
-            PORTS[Agent Service Port]
-        end
-        
-        subgraph "Domain Layer"
-            ENT[Document Entity]
-            RESULT[Extraction Result]
-            RULES[Business Rules]
-        end
-    end
-    
-    subgraph "External Services"
-        MCPS[MCP PDF Server]
-        GEMINI[Google Gemini<br/>Flash 2.0]
-        PDF[PDF Files]
-    end
-    
-    CLI --> A2A
-    EXT --> A2A
-    A2A --> CARD
-    A2A --> WEB
-    WEB --> CTRL
-    CTRL --> UC
-    UC --> PORTS
-    PORTS --> GATE
-    GATE --> AI
-    AI --> GEMINI
-    GATE --> MCP
-    MCP --> MCPS
-    MCPS --> PDF
-    UC --> ENT
-    UC --> RESULT
-    CTRL --> PRES
-    PRES --> WEB
-    WEB --> A2A
-```
-
-### Request Flow Sequence
-
-```mermaid
-sequenceDiagram
-    participant C as Client
-    participant A2A as A2A Server
-    participant CTRL as Controller
-    participant UC as Use Case
-    participant AGENT as Agent Service
-    participant MCP as MCP Client
-    participant MCPS as MCP Server
-    participant AI as Gemini AI
-    
-    C->>A2A: POST /message
-    A2A->>CTRL: handle_message()
-    CTRL->>UC: process_request()
-    
-    alt List PDFs Request
-        UC->>AGENT: process_message("list pdfs")
-        AGENT->>MCP: invoke_tools()
-        MCP->>MCPS: list_pdfs()
-        MCPS-->>MCP: pdf_list
-        MCP-->>AGENT: tool_results
-        AGENT-->>UC: pdf_list_response
-    else Extract PDF Request
-        UC->>AGENT: process_message("extract file.pdf")
-        AGENT->>MCP: invoke_tools()
-        MCP->>MCPS: read_pdf("file.pdf")
-        MCPS-->>MCP: pdf_content
-        MCP-->>AGENT: pdf_text
-        AGENT->>AI: analyze_document(pdf_text)
-        AI-->>AGENT: structured_data
-        AGENT-->>UC: extraction_result
-    end
-    
-    UC-->>CTRL: response_dto
-    CTRL->>CTRL: create_presenter()
-    CTRL-->>A2A: a2a_response
-    A2A-->>C: JSON Response
-```
 
 ## How It Works
 
