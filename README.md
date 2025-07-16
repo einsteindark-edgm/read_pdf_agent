@@ -1,6 +1,6 @@
 # A2A Document Extraction Agent
 
-An intelligent PDF processing system that automatically extracts structured data from documents using **Google's Gemini Flash 2.0** via **LangChain**, **MCP (Model Context Protocol)** for PDF operations, and **Clean Architecture** for maintainable code. Implements the **A2A (Agent-to-Agent) protocol** for seamless integration with other AI agents.
+An intelligent invoice reading agent specialized in extracting structured data from invoice PDF files using **Google's Gemini Flash 2.0** via **LangChain**, **MCP (Model Context Protocol)** for PDF operations, and **Clean Architecture** for maintainable code. Implements the **A2A (Agent-to-Agent) protocol** for seamless integration with other AI agents.
 
 ## Architecture
 
@@ -113,27 +113,26 @@ sequenceDiagram
 ## Features
 
 - 🤝 **A2A Protocol**: Interoperable with other AI agents via standardized protocol
-- 🔍 **Automatic Document Type Detection**: Identifies various document types automatically
-- 📊 **Smart Data Extraction**: Extracts structured data based on detected document type
-- 🤖 **AI-Powered Analysis**: Provides detailed insights and confidence scores
-- 📄 **Multi-Document Support**: Handles various business and logistics documents
+- 🧾 **Invoice Specialization**: Expert at reading and understanding invoice documents
+- 💰 **Financial Data Extraction**: Extracts amounts, taxes, totals, and line items accurately
+- 📅 **Date Recognition**: Identifies invoice dates, due dates, and payment terms
+- 🏢 **Entity Extraction**: Extracts vendor and customer information with high accuracy
 - 💾 **JSON Export**: Returns structured data via A2A messages
 - ✅ **Validation**: File size limits and security checks
 
-## Supported Document Types
+## Invoice Data Extraction
 
-The agent can automatically detect and process:
-- **BILL_OF_LADING**: Ocean freight shipping documents
-- **AIR_WAYBILL**: Air freight documents
-- **COMMERCIAL_INVOICE**: Sales/purchase invoices
-- **PACKING_LIST**: Shipment item lists
-- **CUSTOMS_DECLARATION**: Customs forms
-- **PURCHASE_ORDER**: Order documents
-- **DELIVERY_NOTE**: Delivery receipts
-- **CERTIFICATE_OF_ORIGIN**: Origin certifications
-- **FREIGHT_INVOICE**: Transportation charges
-- **WAREHOUSE_RECEIPT**: Storage documents
-- And many more...
+The agent specializes in extracting the following invoice fields:
+- **Invoice Number**: Unique identifier for the invoice
+- **Invoice Date**: Date of issue
+- **Due Date**: Payment deadline
+- **Vendor Details**: Company name, address, tax ID
+- **Customer Details**: Bill-to and ship-to information
+- **Line Items**: Product/service descriptions, quantities, unit prices
+- **Financial Data**: Subtotal, taxes, discounts, total amount
+- **Payment Terms**: Net terms, early payment discounts
+- **Purchase Order References**: Related PO numbers
+- **Tax Information**: Tax rates and amounts by category
 
 ## Setup
 
@@ -260,9 +259,9 @@ You: list available pdfs
 You: extract invoice-sample.pdf
 
 ⏳ Task [a1b2c3d4]: working
-📋 Extracting data from: invoice-sample.pdf
+🧾 Extracting invoice data from: invoice-sample.pdf
 
-📄 Extracted Data - COMMERCIAL_INVOICE (application/json)
+💰 Extracted Invoice Data (application/json)
 {
   "document_type": "COMMERCIAL_INVOICE",
   "confidence_score": 0.92,
