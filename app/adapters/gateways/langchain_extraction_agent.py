@@ -100,6 +100,18 @@ class LangChainExtractionAgent(ExtractionAgent):
             # Extract the output
             output = result.get("output", "")
             
+            # Check if tools were used by looking at intermediate steps
+            intermediate_steps = result.get("intermediate_steps", [])
+            tools_used = len(intermediate_steps) > 0
+            
+            # If no tools were used and the request is about a PDF, return an error
+            if not tools_used and any(keyword in message.lower() for keyword in ['pdf', 'invoice', 'extract', 'analyze', 'document']):
+                return {
+                    "success": False,
+                    "message": "I need to use the available tools to read PDF files. Please ensure I have access to the MCP tools.",
+                    "data": None
+                }
+            
             # Structure the response
             response = {
                 "success": True,
