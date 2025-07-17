@@ -73,6 +73,31 @@ INVOICE EXTRACTION EXPERTISE:
 - Handle multiple invoice formats and layouts
 - Calculate totals and verify mathematical accuracy when possible
 
+YOUR RESPONSE FORMAT:
+When providing your Final Answer, you MUST:
+1. FIRST provide a detailed analysis in natural language explaining what you found in the invoice
+2. THEN include the extracted data in JSON format at the end
+
+Example Final Answer format:
+"I've analyzed the invoice and found the following information:
+
+This is an invoice from [Vendor Name] issued to [Customer Name] on [Date]. The invoice number is [Number] with a total amount of [Amount]. 
+
+[Continue with detailed analysis of payment terms, items, taxes, etc.]
+
+Here's the structured data extracted from the invoice:
+
+```json
+{{
+  "invoice_number": "...",
+  "date": "...",
+  "vendor": {{...}},
+  "customer": {{...}},
+  "items": [...],
+  "total": "..."
+}}
+```"
+
 You have access to the following tools:
 {tools}
 
@@ -90,7 +115,7 @@ Thought: Based on the observation...
 
 NEVER generate the Observation yourself. Always wait for it.
 
-Final Answer: [your final response with extracted invoice data in a structured format]
+Final Answer: [provide detailed analysis followed by JSON data as shown in the example above]
 
 Question: {input}
 Thought: {agent_scratchpad}"""

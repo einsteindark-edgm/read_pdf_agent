@@ -128,12 +128,31 @@ class LangChainExtractionAgent(ExtractionAgent):
     def _extract_json_from_response(self, text: str) -> Dict[str, Any]:
         """Extract JSON data from agent response."""
         import re
-        json_match = re.search(r'\{.*\}', text, re.DOTALL)
-        if json_match:
+        
+        # First try to find JSON in markdown code blocks
+        code_block_match = re.search(r'```json\s*\n(.*?)\n```', text, re.DOTALL)
+        if code_block_match:
             try:
-                return json.loads(json_match.group())
+                return json.loads(code_block_match.group(1))
             except json.JSONDecodeError:
-                return {}
+                pass
+        
+        # If not found in code blocks, try to find the last complete JSON object
+        # This regex finds JSON objects more accurately
+        json_matches = re.finditer(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', text)
+        json_candidates = list(json_matches)
+        
+        # Try from the last match (most likely to be the structured data)
+        for match in reversed(json_candidates):
+            try:
+                json_str = match.group()
+                # Basic validation that it looks like invoice data
+                data = json.loads(json_str)
+                if isinstance(data, dict) and any(key in str(data).lower() for key in ['invoice', 'vendor', 'customer', 'total', 'date']):
+                    return data
+            except json.JSONDecodeError:
+                continue
+        
         return {}
     
     def _determine_document_type(self, data: Dict[str, Any], text: str) -> DocumentType:

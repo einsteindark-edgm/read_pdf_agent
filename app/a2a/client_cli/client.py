@@ -18,7 +18,7 @@ from a2a.types import (
 class DocumentExtractionClient:
     """Client for interacting with Document Extraction Agent via A2A protocol."""
     
-    def __init__(self, base_url: str = "http://localhost:8080"):
+    def __init__(self, base_url: str = "http://localhost:8005"):
         """Initialize the client.
         
         Args:

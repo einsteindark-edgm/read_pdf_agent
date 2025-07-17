@@ -12,7 +12,7 @@ def get_agent_card() -> AgentCard:
         name="Document Extraction Agent",
         description="AI-powered agent that extracts structured data from PDFs in the static folder. "
                    "Automatically detects document types and provides detailed analysis.",
-        url="http://localhost:8080/",
+        url="http://localhost:8005/",
         version="1.0.0",
         defaultInputModes=["text"],
         defaultOutputModes=["text", "application/json"],

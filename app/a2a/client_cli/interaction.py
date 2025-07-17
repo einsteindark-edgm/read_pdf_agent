@@ -8,7 +8,7 @@ from .client import DocumentExtractionClient
 class DocumentExtractionInteraction:
     """Handles interactive sessions and testing for Document Extraction Agent."""
     
-    def __init__(self, base_url: str = "http://localhost:8080"):
+    def __init__(self, base_url: str = "http://localhost:8005"):
         """Initialize the interaction handler.
         
         Args:

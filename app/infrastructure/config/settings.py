@@ -40,8 +40,8 @@ class Settings:
             mcp_pdf_transport=os.getenv("MCP_PDF_TRANSPORT", "stdio"),
             gemini_model=os.getenv("GEMINI_MODEL", "models/gemini-1.5-flash"),
             a2a_host=os.getenv("A2A_HOST", "0.0.0.0"),
-            a2a_port=int(os.getenv("A2A_PORT", "8080")),
-            max_pdf_size_kb=int(os.getenv("MAX_PDF_SIZE_KB", "350")),
+            a2a_port=int(os.getenv("A2A_PORT", "8005")),
+            max_pdf_size_kb=int(os.getenv("MAX_PDF_SIZE_KB", "7000")),
             pdf_dir=os.getenv("PDF_DIR", "./data/pdfs")
         )
 

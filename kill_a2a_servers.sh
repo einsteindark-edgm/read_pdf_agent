@@ -1,18 +1,18 @@
 #!/bin/bash
-# Script to kill all processes using port 8080
+# Script to kill all processes using port 8005
 
-echo "🔍 Finding processes using port 8080..."
+echo "🔍 Finding processes using port 8005..."
 
-# Find PIDs using port 8080
-PIDS=$(lsof -ti:8080)
+# Find PIDs using port 8005
+PIDS=$(lsof -ti:8005)
 
 if [ -z "$PIDS" ]; then
-    echo "✅ No processes found using port 8080"
+    echo "✅ No processes found using port 8005"
     exit 0
 fi
 
 echo "Found the following processes:"
-lsof -i:8080
+lsof -i:8005
 
 echo ""
 echo "🛑 Killing processes..."
@@ -29,13 +29,13 @@ done
 
 echo ""
 echo "🔍 Verifying..."
-REMAINING=$(lsof -ti:8080)
+REMAINING=$(lsof -ti:8005)
 
 if [ -z "$REMAINING" ]; then
-    echo "✅ All processes using port 8080 have been terminated"
+    echo "✅ All processes using port 8005 have been terminated"
 else
     echo "⚠️  Some processes are still running:"
-    lsof -i:8080
+    lsof -i:8005
     echo ""
     echo "You may need to run: sudo ./kill_a2a_servers.sh"
 fi

@@ -46,7 +46,7 @@ def run_server():
     
     # Get host and port from env or defaults
     host = os.getenv("A2A_HOST", "0.0.0.0")
-    port = int(os.getenv("A2A_PORT", "8080"))
+    port = int(os.getenv("A2A_PORT", "8086"))
     
     print(f"🚀 Starting A2A Document Extraction Agent on {host}:{port}")
     print(f"📋 Agent card available at: http://{host}:{port}/.well-known/agent.json")

@@ -45,6 +45,6 @@ class Document:
             return 0.0
         return len(self.content.encode('utf-8')) / 1024
     
-    def exceeds_size_limit(self, max_size_kb: float = 350.0) -> bool:
+    def exceeds_size_limit(self, max_size_kb: float = 7000.0) -> bool:
         """Business rule: Check if document exceeds size limit."""
         return self.get_size_kb() > max_size_kb

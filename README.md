@@ -14,7 +14,7 @@ graph TB
     end
     
     subgraph "A2A Protocol Layer"
-        A2A[A2A Server<br/>:8080]
+        A2A[A2A Server<br/>:8005]
         CARD[Agent Card<br/>/.well-known/agent.json]
     end
     
@@ -196,11 +196,11 @@ source .venv/bin/activate
 python3 __main__.py
 ```
 
-The server will start on `http://localhost:8080` and display:
+The server will start on `http://localhost:8005` and display:
 ```
-🚀 Starting A2A Document Extraction Agent on 0.0.0.0:8080
-📋 Agent card available at: http://0.0.0.0:8080/.well-known/agent.json
-💬 Send messages to: http://0.0.0.0:8080/
+🚀 Starting A2A Document Extraction Agent on 0.0.0.0:8005
+📋 Agent card available at: http://0.0.0.0:8005/.well-known/agent.json
+💬 Send messages to: http://0.0.0.0:8005/
 ```
 
 2. **Interact with the agent** (Terminal 2):
@@ -233,7 +233,7 @@ This will:
 
 If you get a "port already in use" error:
 ```bash
-# Kill all processes using port 8080
+# Kill all processes using port 8005
 ./kill_a2a_servers.sh
 ```
 
@@ -291,7 +291,7 @@ You: extract invoice-sample.pdf
 | `MCP_PDF_SERVER_DIR` | Directory where MCP server is located | `/path/to/MCP_pdf_extract` |
 | `MCP_PDF_SERVER_ARGS` | Arguments for MCP server | `run python mcp_documents_server.py` |
 | `MCP_PDF_TRANSPORT` | MCP transport type | `stdio` |
-| `MAX_PDF_SIZE_KB` | Maximum PDF size in KB | `350` |
+| `MAX_PDF_SIZE_KB` | Maximum PDF size in KB | `7000` |
 | `GEMINI_MODEL` | Gemini model to use | `models/gemini-2.0-flash-exp` |
 
 ## Project Structure
@@ -322,7 +322,7 @@ read_pdf_agent/
 ├── a2a_client.py                 # Full A2A client implementation
 ├── client.py                     # Simple client wrapper
 ├── run_quick_test.sh            # Quick automated test
-├── kill_a2a_servers.sh          # Kill processes on port 8080
+├── kill_a2a_servers.sh          # Kill processes on port 8005
 ├── wait_for_server.py           # Server readiness checker
 ├── requirements.txt              # Python dependencies
 └── .env.example                  # Environment template
@@ -394,7 +394,7 @@ The agent automatically learns new document types through the prompts. No code c
    - Check filename spelling (case-sensitive)
 
 2. **"PDF too large" error**
-   - Default limit is 350KB
+   - Default limit is 7000KB (7MB)
    - Adjust `MAX_PDF_SIZE_KB` in `.env` if needed
 
 3. **API errors**

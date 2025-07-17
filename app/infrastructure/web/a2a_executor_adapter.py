@@ -82,29 +82,49 @@ class CleanArchitectureA2AExecutor(AgentExecutor):
             # Use presenter to format response
             message_parts = self.presenter.format_response(result)
             
-            # Convert to A2A format
-            a2a_parts = []
+            # Process response based on parts
+            text_content = None
+            data_artifact = None
+            
             for part in message_parts:
                 if hasattr(part.root, 'text'):
-                    a2a_parts.append(part.root.text)
+                    text_content = part.root.text
                 elif hasattr(part.root, 'data'):
-                    artifact = new_data_artifact(
-                        part.root.data,
-                        part.root.mimeType,
-                        part.root.name
+                    data_artifact = new_data_artifact(
+                        "extraction_result",  # name
+                        part.root.data,       # data (dict)
+                        "Invoice data extracted from PDF"  # description
                     )
-                    a2a_parts.append(artifact)
             
-            # Create response message
-            if len(a2a_parts) > 1:
-                response = new_agent_parts_message(
-                    a2a_parts,
+            # Create response message with both text and data if available
+            if text_content and data_artifact:
+                # Combine text with a note about the attached data
+                full_message = text_content
+                if not "structured data" in text_content.lower():
+                    full_message += "\n\n📎 Structured data has been extracted and is available in JSON format."
+                
+                response = new_agent_text_message(
+                    full_message,
+                    task.contextId,
+                    task.id
+                )
+                
+                # Update task with artifact after sending text message
+                # The artifact will be available to the client even though it's not in the message
+                task.artifacts = task.artifacts or []
+                task.artifacts.append(data_artifact)
+                
+            elif text_content:
+                # Only text response
+                response = new_agent_text_message(
+                    text_content,
                     task.contextId,
                     task.id
                 )
             else:
+                # Default response
                 response = new_agent_text_message(
-                    a2a_parts[0] if a2a_parts else "No response",
+                    "No response generated",
                     task.contextId,
                     task.id
                 )

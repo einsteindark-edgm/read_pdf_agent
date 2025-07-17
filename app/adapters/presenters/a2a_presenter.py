@@ -31,9 +31,7 @@ class A2APresenter:
         # Add structured data as data part if present
         if result.get("data"):
             parts.append(Part(root=DataPart(
-                mimeType="application/json",
-                data=json.dumps(result["data"], indent=2),
-                name="extraction_result"
+                data=result["data"]  # DataPart expects a dict, not a JSON string
             )))
         
         return parts
